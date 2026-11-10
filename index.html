@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity Bubble</title>
+    <!-- Load PyScript CSS and JS -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+    <style>
+        body {
+            background-color: #1a2a40;
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 2px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gravity Bubble</h1>
+    <p></p>
+
+    <!-- Pygame target canvas -->
+    <canvas id="gameCanvas" width="600" height="500"></canvas>
+
+    <!-- Pure Python Game Code using PyScript and Pygame-CE -->
+    <script type="py-game" target="gameCanvas">
+        import asyncio
+        import random
+        import pygame
+
+        pygame.init()
+        WIDTH, HEIGHT = 600, 500
+        screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Gravity Bubble")
+
+        clock = pygame.time.Clock()
+
+        class Bubble:
+            def __init__(self):
+                self.radius = random.randint(20, 45)
+                self.x = random.randint(self.radius, WIDTH - self.radius)
+                self.y = -self.radius  # Spawn above the screen (sky)
+                self.speed = random.randint(2, 5)
+                self.color = (random.randint(100, 200), random.randint(180, 255), 255)
+
+            def update(self):
+                self.y += self.speed  # Fall down
+
+            def draw(self, surface):
+                pygame.draw.circle(surface, self.color, (int(self.x), int(self.y)), self.radius)
+                # Outer border
+                pygame.draw.circle(surface, (255, 255, 255), (int(self.x), int(self.y)), self.radius, 2)
+
+        async def main():
+            bubbles = []
+            score = 0
+            spawn_timer = 0
+            font = pygame.font.Font(None, 36)
+
+            running = True
+            while running:
+                screen.fill((26, 42, 64)) # Night sky background
+
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse_x, mouse_y = event.pos
+                        for bubble in bubbles[:]:
+                            dist = ((bubble.x - mouse_x)**2 + (bubble.y - mouse_y)**2)**0.5
+                            if dist <= bubble.radius:
+                                bubbles.remove(bubble)
+                                score += 1
+                                break
+
+                # Spawn bubbles over time
+                spawn_timer += 1
+                if spawn_timer > 30:
+                    bubbles.append(Bubble())
+                    spawn_timer = 0
+
+                # Update and draw bubbles
+                for bubble in bubbles[:]:
+                    bubble.update()
+                    bubble.draw(screen)
+                    # Remove if it goes off screen
+                    if bubble.y - bubble.radius > HEIGHT:
+                        bubbles.remove(bubble)
+
+                # Render score on screen
+                score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+                screen.blit(score_text, (20, 20))
+
+                pygame.display.flip()
+                await asyncio.sleep(1 / 60) # Yield control to the browser frame loop
+
+        asyncio.create_task(main())
+    </script>
+
+</body>
+</html>
