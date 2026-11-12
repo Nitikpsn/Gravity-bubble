@@ -10,17 +10,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Gravity Bubble")
 font = pygame.font.Font(None, 40)
 
-COLORS = [
-    (255, 99, 132),
-    (255, 205, 86),
-    (75, 192, 192),
-    (54, 162, 235),
-    (153, 102, 255),
-    (255, 159, 64),
-    (0, 255, 128),
-    (255, 0, 200)
-]
-
 bubbles = []
 score = 0
 timer = 0
@@ -32,7 +21,11 @@ def add_bubble():
         "y": -radius,
         "radius": radius,
         "speed": random.randint(2, 5),
-        "color": random.choice(COLORS)
+        "color": (
+            random.randint(60, 255),
+            random.randint(60, 255),
+            random.randint(60, 255)
+        )
     }
     bubbles.append(bubble)
 
