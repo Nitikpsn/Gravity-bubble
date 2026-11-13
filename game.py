@@ -1,29 +1,28 @@
 import asyncio
-import random
+
 import pygame
+
+from bubble import Bubble
+from physics import update_bubbles
+from settings import (
+    WIDTH,
+    HEIGHT,
+    FPS,
+    SPAWN_FRAMES,
+    BACKGROUND,
+    TEXT_COLOR,
+    SCORE_POS,
+)
 
 pygame.init()
 
-W = 600
-H = 500
-screen = pygame.display.set_mode((W, H))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Gravity Bubble")
 font = pygame.font.Font(None, 40)
 
 bubbles = []
 score = 0
 timer = 0
-
-
-def new_bubble():
-    r = random.randint(20, 45)
-    bubbles.append({
-        "x": random.randint(r, W - r),
-        "y": -r,
-        "r": r,
-        "speed": random.randint(2, 5),
-        "color": (random.randint(60, 255), random.randint(60, 255), random.randint(60, 255)),
-    })
 
 
 async def main():
@@ -37,34 +36,28 @@ async def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
                 for b in bubbles[:]:
-                    dx = b["x"] - mx
-                    dy = b["y"] - my
-                    if dx * dx + dy * dy <= b["r"] ** 2:
+                    if b.clicked(mx, my):
                         bubbles.remove(b)
                         score += 1
                         break
 
         timer += 1
-        if timer >= 30:
-            new_bubble()
+        if timer >= SPAWN_FRAMES:
+            bubbles.append(Bubble())
             timer = 0
 
-        screen.fill((26, 32, 64))
+        update_bubbles(bubbles)
+        bubbles[:] = [b for b in bubbles if not b.offscreen()]
 
-        for b in bubbles[:]:
-            b["y"] += b["speed"]
-            x, y = int(b["x"]), int(b["y"])
-            pygame.draw.circle(screen, b["color"], (x, y), b["r"])
-            pygame.draw.circle(screen, (255, 255, 255), (x, y), b["r"], 2)
+        screen.fill(BACKGROUND)
+        for b in bubbles:
+            b.draw(screen)
 
-            if b["y"] - b["r"] > H:
-                bubbles.remove(b)
-
-        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
-        screen.blit(score_text, (20, 20))
+        score_text = font.render(f"Score: {score}", True, TEXT_COLOR)
+        screen.blit(score_text, SCORE_POS)
         pygame.display.flip()
 
-        await asyncio.sleep(1 / 60)
+        await asyncio.sleep(1 / FPS)
 
 
 asyncio.create_task(main())
