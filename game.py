@@ -60,4 +60,10 @@ async def main():
         await asyncio.sleep(1 / FPS)
 
 
-asyncio.create_task(main())
+try:
+    # PyScript already runs this module in an async context (browser).
+    asyncio.get_running_loop()
+    asyncio.create_task(main())
+except RuntimeError:
+    # Plain Python, e.g. `python game.py` (desktop).
+    asyncio.run(main())
