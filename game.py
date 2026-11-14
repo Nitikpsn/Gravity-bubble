@@ -81,5 +81,5 @@ try:
     asyncio.get_running_loop()
     asyncio.create_task(main())
 except RuntimeError:
-    # Plain Python, e.g. `python game.py` (desktop).
+    # Plain Python, e.g. `python game.py` (de
     asyncio.run(main())

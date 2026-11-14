@@ -29,7 +29,7 @@ class Bubble:
             random.randint(MIN_COLOR, MAX_COLOR),
             random.randint(MIN_COLOR, MAX_COLOR),
         )
-                  
+
     def draw(self, screen):
         pos = (int(self.x), int(self.y))
         pygame.draw.circle(screen, self.color, pos, self.radius)

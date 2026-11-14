@@ -27,29 +27,32 @@ def bounce_walls(b):
 def collide(a, b):
     dx = b.x - a.x
     dy = b.y - a.y
-    dist = math.hypot(dx, dy)
-    min_dist = a.radius + b.radius
+    reach = a.radius + b.radius
 
-    if dist == 0 or dist >= min_dist:
+    # skip the sqrt for bubbles that are nowhere near each other
+    if abs(dx) > reach or abs(dy) > reach:
+        return
+
+    dist = math.sqrt(dx * dx + dy * dy)
+    if dist == 0 or dist >= reach:
         return
 
     nx = dx / dist
     ny = dy / dist
-    overlap = (min_dist - dist) / 2
+    push = (reach - dist) / 2
 
-    a.x -= nx * overlap
-    a.y -= ny * overlap
-    b.x += nx * overlap
-    b.y += ny * overlap
+    a.x -= nx * push
+    a.y -= ny * push
+    b.x += nx * push
+    b.y += ny * push
 
-    avn = a.vx * nx + a.vy * ny
-    bvn = b.vx * nx + b.vy * ny
-
-    if bvn - avn >= 0:
+    a_speed = a.vx * nx + a.vy * ny
+    b_speed = b.vx * nx + b.vy * ny
+    if b_speed - a_speed >= 0:
         return
 
-    impulse = (bvn - avn) * COLLISION_BOUNCE
-    a.vx += impulse * nx
-    a.vy += impulse * ny
-    b.vx -= impulse * nx
-    b.vy -= impulse * ny
+    kick = (b_speed - a_speed) * COLLISION_BOUNCE
+    a.vx += kick * nx
+    a.vy += kick * ny
+    b.vx -= kick * nx
+    b.vy -= kick * ny

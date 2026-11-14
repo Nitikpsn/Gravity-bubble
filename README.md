@@ -15,9 +15,9 @@ python3 -m http.server 8000
 
 Then open <http://localhost:8000/> in your browser.
 
-The first load downloads Python and Pygame-CE (several MB), so it can take
-20-30 seconds before the first bubbles appear. A loading screen is shown until
-the game starts. Later loads are faster because the browser caches the files.
+The first load downloads Python and Pygame-CE (a few MB), so it can take a while
+before the bubbles show up. After that the browser caches everything and it
+loads fast.
 
 Files:
 
