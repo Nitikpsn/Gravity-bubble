@@ -23,7 +23,7 @@ class Bubble:
         self.x = float(random.randint(self.radius, WIDTH - self.radius))
         self.y = float(-self.radius)
         self.vx = random.uniform(-MAX_DRIFT, MAX_DRIFT)
-        self.vy = float(random.randint(MIN_SPEED, MAX_SPEED))
+        self.vy = random.uniform(MIN_SPEED, MAX_SPEED)
         self.color = (
             random.randint(MIN_COLOR, MAX_COLOR),
             random.randint(MIN_COLOR, MAX_COLOR),
