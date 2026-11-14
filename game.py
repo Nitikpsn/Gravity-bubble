@@ -25,9 +25,21 @@ score = 0
 timer = 0
 
 
+def hide_loading_message():
+    """Remove the HTML loading overlay once the first frame is drawn."""
+    try:
+        from pyscript import document
+    except ImportError:
+        return  # Running outside the browser (desktop pygame).
+    loading = document.getElementById("loading")
+    if loading is not None:
+        loading.remove()
+
+
 async def main():
     global score, timer
     running = True
+    first_frame = True
 
     while running:
         for event in pygame.event.get():
@@ -56,6 +68,10 @@ async def main():
         score_text = font.render(f"Score: {score}", True, TEXT_COLOR)
         screen.blit(score_text, SCORE_POS)
         pygame.display.flip()
+
+        if first_frame:
+            hide_loading_message()
+            first_frame = False
 
         await asyncio.sleep(1 / FPS)
 

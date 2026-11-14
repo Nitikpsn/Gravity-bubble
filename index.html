@@ -14,8 +14,45 @@
             text-align: center;
             margin-top: 20px;
         }
+        #game-wrap {
+            position: relative;
+            display: inline-block;
+        }
         canvas {
             cursor: pointer;
+            display: block;
+        }
+        #loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 24px;
+            box-sizing: border-box;
+            background: #1a2040;
+            border: 2px solid #2a3358;
+            color: #e8ecff;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        #loading code {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #8fb3ff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -23,7 +60,34 @@
 
     <h1>Gravity Bubble</h1>
 
-    <canvas id="canvas" width="600" height="500"></canvas>
+    <div id="game-wrap">
+        <canvas id="canvas" width="600" height="500"></canvas>
+        <div id="loading">
+            <div class="spinner" id="spinner"></div>
+            <p id="loading-text">Loading the game&hellip;<br>The first load can take 20&ndash;30 seconds while Python and Pygame download.</p>
+        </div>
+    </div>
+
+    <script>
+        // PyScript needs the files to be fetched over HTTP; file:// will not work.
+        if (location.protocol === "file:") {
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("loading-text").innerHTML =
+                'This game must be opened through a web server.<br>' +
+                'Run <code>python3 -m http.server 8000</code> in the project folder, ' +
+                'then open <code>http://localhost:8000/</code>.';
+        } else {
+            // Give a hint if the interpreter never manages to start.
+            setTimeout(function () {
+                var text = document.getElementById("loading-text");
+                if (document.getElementById("loading") && text) {
+                    text.innerHTML =
+                        'Still loading&hellip; this can take a while on a slow connection.<br>' +
+                        'If nothing happens, open the browser console (F12) to see any errors.';
+                }
+            }, 60000);
+        }
+    </script>
 
     <script type="py-game" src="game.py" target="canvas" config="pyscript.json"></script>
 
