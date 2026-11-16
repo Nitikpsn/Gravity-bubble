@@ -14,6 +14,8 @@ from settings import (
     BACKGROUND,
     TEXT_COLOR,
     SCORE_POS,
+    FONT_PATH,
+    FONT_SIZE,
 )
 
 # Only initialise what this game uses. Full pygame.init() also starts the
@@ -23,7 +25,12 @@ pygame.font.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Gravity Bubble")
-font = pygame.font.Font(None, 40)
+
+try:
+    font = pygame.font.Font(FONT_PATH, FONT_SIZE)
+except (OSError, pygame.error):
+    # Desktop runs may not have the webfont; the game still works without it.
+    font = pygame.font.Font(None, FONT_SIZE)
 
 bubbles = []
 score = 0

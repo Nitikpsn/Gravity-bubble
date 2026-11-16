@@ -9,6 +9,7 @@ const CDN_HOSTS = [
     "pyodide.org",
     "files.pythonhosted.org",
     "pypi.org",
+    "fonts.cdnfonts.com",
 ];
 
 self.addEventListener("install", function () {

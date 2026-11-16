@@ -2,6 +2,7 @@
     "files": {
         "./settings.py": "./settings.py",
         "./bubble.py": "./bubble.py",
-        "./physics.py": "./physics.py"
+        "./physics.py": "./physics.py",
+        "https://fonts.cdnfonts.com/s/155838/GrapeSquishy-G3GrA.woff": "./GrapeSquishy.woff"
     }
 }

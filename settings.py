@@ -27,3 +27,5 @@ MAX_COLOR = 255
 # Cap the frame step so a slow frame can never launch a bubble across the screen.
 MAX_FRAME_STEP = 3.0
 SCORE_POS = (20, 20)
+FONT_PATH = "GrapeSquishy.woff"
+FONT_SIZE = 40
