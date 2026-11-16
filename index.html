@@ -4,29 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gravity Bubble</title>
+    <link rel="preconnect" href="https://pyscript.net" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="modulepreload" href="https://pyscript.net/releases/2026.3.1/core.js" crossorigin>
     <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
     <style>
         body {
-            background-color: #370404;
-            color: white;
+            background-color: #000000;
+            color: #ffffff;
             font-family: sans-serif;
             text-align: center;
             margin: 0;
             padding-top: 20px;
         }
         canvas {
+            background-color: #000000;
             cursor: pointer;
             display: block;
             margin: 0 auto;
+        }
+
+        /* Shown instantly, before Python/Pygame finishes downloading. */
+        #loading {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: #000000;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+        #loading .spinner {
+            width: 34px;
+            height: 34px;
+            border: 2px solid #333333;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        #loading .status {
+            font-size: 14px;
+            letter-spacing: 0.02em;
+        }
+        #loading .hint {
+            max-width: 34rem;
+            padding: 0 16px;
+            color: #9a9a9a;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
+    <div id="loading" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <div class="status" id="loading-status">Starting Python&hellip;</div>
+        <div class="hint" id="loading-hint">
+            The first visit downloads Python and Pygame, so it can take a little
+            while. Later visits load from the browser cache.
+        </div>
+    </div>
+
     <h1>Gravity Bubble</h1>
 
     <canvas id="canvas" width="600" height="500"></canvas>
+
+    <script>
+        // Show PyScript/Pyodide progress in the loading screen.
+        (function () {
+            var status = document.getElementById("loading-status");
+            var hint = document.getElementById("loading-hint");
+
+            window.addEventListener("py:progress", function (event) {
+                if (typeof event.detail === "string" && event.detail) {
+                    status.textContent = event.detail + "\u2026";
+                }
+            });
+
+            // If it is taking unusually long, explain why instead of looking stuck.
+            setTimeout(function () {
+                if (document.getElementById("loading")) {
+                    hint.textContent =
+                        "Still downloading Python and Pygame. This is normal on " +
+                        "the first visit \u2014 check your connection if it stays " +
+                        "like this for more than a minute.";
+                }
+            }, 20000);
+
+            // Cache PyScript/Pyodide files after the first load, so reloads are fast.
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function () {
+                    navigator.serviceWorker.register("./sw.js").catch(function () {
+                        // Service workers need https:// or localhost; the game
+                        // still works without one.
+                    });
+                });
+            }
+        })();
+    </script>
 
     <script type="py-game" src="game.py" target="canvas" config="pyscript.json"></script>
 

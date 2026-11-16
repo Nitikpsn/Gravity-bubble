@@ -24,14 +24,13 @@ class Bubble:
         self.y = float(-self.radius)
         self.vx = random.uniform(-MAX_DRIFT, MAX_DRIFT)
         self.vy = random.uniform(MIN_SPEED, MAX_SPEED)
-        self.color = (
-            random.randint(MIN_COLOR, MAX_COLOR),
-            random.randint(MIN_COLOR, MAX_COLOR),
-            random.randint(MIN_COLOR, MAX_COLOR),
-        )
+        
+        shade = random.randint(MIN_COLOR, MAX_COLOR)
+        self.color = (shade, shade, shade)
 
     def draw(self, screen):
-        pos = (int(self.x), int(self.y))
+       
+        pos = (round(self.x), round(self.y))
         pygame.draw.circle(screen, self.color, pos, self.radius)
         pygame.draw.circle(screen, OUTLINE_COLOR, pos, self.radius, OUTLINE_WIDTH)
 

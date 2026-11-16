@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 import pygame
 
@@ -9,12 +10,16 @@ from settings import (
     HEIGHT,
     FPS,
     SPAWN_FRAMES,
+    MAX_FRAME_STEP,
     BACKGROUND,
     TEXT_COLOR,
     SCORE_POS,
 )
 
-pygame.init()
+# Only initialise what this game uses. Full pygame.init() also starts the
+# mixer, which adds startup time in the browser and is not needed here.
+pygame.display.init()
+pygame.font.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Gravity Bubble")
@@ -30,7 +35,7 @@ def hide_loading_message():
     try:
         from pyscript import document
     except ImportError:
-        return  # Running outside the browser (desktop pygame).
+        return
     loading = document.getElementById("loading")
     if loading is not None:
         loading.remove()
@@ -40,8 +45,11 @@ async def main():
     global score, timer
     running = True
     first_frame = True
+    last_time = time.perf_counter()
 
     while running:
+        frame_start = time.perf_counter()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -53,12 +61,16 @@ async def main():
                         score += 1
                         break
 
-        timer += 1
+        now = time.perf_counter()
+        dt = min(max((now - last_time) * FPS, 0.0), MAX_FRAME_STEP)
+        last_time = now
+
+        timer += dt
         if timer >= SPAWN_FRAMES:
             bubbles.append(Bubble())
             timer = 0
 
-        update_bubbles(bubbles)
+        update_bubbles(bubbles, dt)
         bubbles[:] = [b for b in bubbles if not b.offscreen()]
 
         screen.fill(BACKGROUND)
@@ -73,13 +85,15 @@ async def main():
             hide_loading_message()
             first_frame = False
 
-        await asyncio.sleep(1 / FPS)
+     
+        elapsed = time.perf_counter() - frame_start
+        await asyncio.sleep(max(0.0, 1 / FPS - elapsed))
 
 
 try:
-    # PyScript already runs this module in an async context (browser).
+   
     asyncio.get_running_loop()
     asyncio.create_task(main())
 except RuntimeError:
-    # Plain Python, e.g. `python game.py` (de
+
     asyncio.run(main())

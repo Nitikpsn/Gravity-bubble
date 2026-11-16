@@ -16,8 +16,10 @@ python3 -m http.server 8000
 Then open <http://localhost:8000/> in your browser.
 
 The first load downloads Python and Pygame-CE (a few MB), so it can take a while
-before the bubbles show up. After that the browser caches everything and it
-loads fast.
+before the bubbles show up. A loading screen shows the current download step,
+and a service worker (`sw.js`) caches the PyScript/Pyodide files so later visits
+start much faster. Service workers need `http://localhost` or HTTPS; on a plain
+HTTP address the game still works, it just does not get the extra cache.
 
 Files:
 
@@ -27,6 +29,7 @@ Files:
 - `physics.py` – gravity, wall bounce and bubble collisions
 - `settings.py` – tunable constants
 - `pyscript.json` – tells PyScript to copy the Python modules into its virtual filesystem
+- `sw.js` – service worker that caches the Python/Pygame runtime between visits
 
 ## Play on the desktop
 

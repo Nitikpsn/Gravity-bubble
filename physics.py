@@ -3,16 +3,21 @@ import math
 from settings import WIDTH, GRAVITY, WALL_BOUNCE, COLLISION_BOUNCE
 
 
-def update_bubbles(bubbles):
-    for b in bubbles:
-        b.vy += GRAVITY
-        b.x += b.vx
-        b.y += b.vy
-        bounce_walls(b)
+def update_bubbles(bubbles, dt=1.0):
+    """Advance the simulation by dt frames (1.0 == one 60 FPS frame)."""
+    steps = max(1, math.ceil(dt))
+    step = dt / steps
 
-    for i in range(len(bubbles)):
-        for j in range(i + 1, len(bubbles)):
-            collide(bubbles[i], bubbles[j])
+    for _ in range(steps):
+        for b in bubbles:
+            b.vy += GRAVITY * step
+            b.x += b.vx * step
+            b.y += b.vy * step
+            bounce_walls(b)
+
+        for i in range(len(bubbles)):
+            for j in range(i + 1, len(bubbles)):
+                collide(bubbles[i], bubbles[j])
 
 
 def bounce_walls(b):
@@ -29,7 +34,7 @@ def collide(a, b):
     dy = b.y - a.y
     reach = a.radius + b.radius
 
-    # skip the sqrt for bubbles that are nowhere near each other
+   
     if abs(dx) > reach or abs(dy) > reach:
         return
 
