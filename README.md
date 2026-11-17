@@ -2,7 +2,8 @@
 
 A small web game made with Python, PyScript and Pygame. The Python game code is in `game.py`.
 
-Bubbles fall from the sky in many colors. Click a bubble to burst it. 1 burst = 1 point.
+Bubbles fall from the sky in many colors. Click a bubble to burst it. Each burst awards
+`POINTS_PER_CLICK` points (set in `settings.py`, default 1).
 
 ## Play in the browser
 

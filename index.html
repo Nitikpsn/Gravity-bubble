@@ -4,36 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gravity Bubble</title>
-    <link rel="preconnect" href="https://pyscript.net" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
-    <link rel="preload" as="font" type="font/woff" crossorigin
-          href="https://fonts.cdnfonts.com/s/155838/GrapeSquishy-G3GrA.woff">
-    <link rel="modulepreload" href="https://pyscript.net/releases/2026.3.1/core.js" crossorigin>
     <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
     <style>
         @font-face {
             font-family: "Grape Squishy";
             src: url("https://fonts.cdnfonts.com/s/155838/GrapeSquishy-G3GrA.woff") format("woff");
-            font-display: swap;
         }
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background: #000;
+            color: #fff;
             font-family: "Grape Squishy", sans-serif;
             text-align: center;
             margin: 0;
             padding-top: 20px;
         }
         canvas {
-            background-color: #000000;
+            background: #000;
             cursor: pointer;
             display: block;
-            margin: 0 auto;
+            margin: auto;
         }
-
-        /* Shown instantly, before Python/Pygame finishes downloading. */
         #loading {
             position: fixed;
             inset: 0;
@@ -41,13 +32,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000000;
+            background: #000;
         }
-        #loading .spinner {
+        .spinner {
             width: 36px;
             height: 36px;
-            border: 3px solid #333333;
-            border-top-color: #ffffff;
+            border: 3px solid #333;
+            border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -57,28 +48,18 @@
     </style>
 </head>
 <body>
-
-    <div id="loading" role="status" aria-label="Loading">
-        <div class="spinner"></div>
-    </div>
+    <div id="loading"><div class="spinner"></div></div>
 
     <h1>Gravity Bubble</h1>
 
     <canvas id="canvas" width="600" height="500"></canvas>
 
     <script>
-        // Cache PyScript/Pyodide files after the first load, so reloads are fast.
         if ("serviceWorker" in navigator) {
-            window.addEventListener("load", function () {
-                navigator.serviceWorker.register("./sw.js").catch(function () {
-                    // Service workers need https:// or localhost; the game
-                    // still works without one.
-                });
-            });
+            navigator.serviceWorker.register("./sw.js");
         }
     </script>
 
     <script type="py-game" src="game.py" target="canvas" config="pyscript.json"></script>
-
 </body>
 </html>
