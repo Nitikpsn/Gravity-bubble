@@ -1,4 +1,4 @@
-const cacheName = "gravity-bubble-v1";
+const cacheName = "gravity-bubble-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();

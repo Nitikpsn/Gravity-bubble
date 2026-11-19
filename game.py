@@ -4,6 +4,7 @@ import time
 import pygame
 
 from bubble import Bubble
+from effects import Burst, draw_bursts, update_bursts
 from physics import update_bubbles
 from settings import (
     WIDTH,
@@ -18,6 +19,7 @@ from settings import (
     FONT_PATH,
     FONT_SIZE,
 )
+from sound import play_pop
 
 pygame.display.init()
 pygame.font.init()
@@ -28,6 +30,7 @@ pygame.display.set_caption("Gravity Bubble")
 font = pygame.font.Font(FONT_PATH, FONT_SIZE)
 
 bubbles = []
+bursts = []
 score = 0
 timer = 0
 
@@ -58,6 +61,8 @@ async def main():
                 for b in bubbles[:]:
                     if b.clicked(*event.pos):
                         bubbles.remove(b)
+                        bursts.append(Burst(b))
+                        play_pop()
                         score += POINTS_PER_CLICK
                         break
 
@@ -72,10 +77,12 @@ async def main():
 
         update_bubbles(bubbles, dt)
         bubbles[:] = [b for b in bubbles if not b.offscreen()]
+        update_bursts(bursts, dt)
 
         screen.fill(BACKGROUND)
         for b in bubbles:
             b.draw(screen)
+        draw_bursts(screen, bursts)
         screen.blit(font.render(f"Score: {score}", True, TEXT_COLOR), SCORE_POS)
         pygame.display.flip()
 

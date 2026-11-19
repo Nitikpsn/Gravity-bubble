@@ -3,6 +3,8 @@
         "./settings.py": "./settings.py",
         "./bubble.py": "./bubble.py",
         "./physics.py": "./physics.py",
+        "./effects.py": "./effects.py",
+        "./sound.py": "./sound.py",
         "https://fonts.cdnfonts.com/s/155838/GrapeSquishy-G3GrA.woff": "./GrapeSquishy.woff"
     }
 }

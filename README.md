@@ -2,8 +2,10 @@
 
 A small web game made with Python, PyScript and Pygame. The Python game code is in `game.py`.
 
-Bubbles fall from the sky in many colors. Click a bubble to burst it. Each burst awards
-`POINTS_PER_CLICK` points (set in `settings.py`, default 1).
+Bubbles fall from the sky in many colors. Click a bubble to burst it into a shower of
+shards with a pop sound. Each burst awards `POINTS_PER_CLICK` points (set in
+`settings.py`, default 1). The pop sound is synthesised in code, so there are no audio
+files to download.
 
 ## Play in the browser
 
@@ -28,6 +30,8 @@ Files:
 - `game.py` – game loop, input and score
 - `bubble.py` – bubble object (movement, drawing, hit testing)
 - `physics.py` – gravity, wall bounce and bubble collisions
+- `effects.py` – particle burst animation when a bubble pops
+- `sound.py` – synthesised pop sound effect
 - `settings.py` – tunable constants
 - `pyscript.json` – tells PyScript to copy the Python modules into its virtual filesystem
 - `sw.js` – service worker that caches the Python/Pygame runtime between visits
